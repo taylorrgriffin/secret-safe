@@ -39,7 +39,8 @@ module.exports={
             fs.readFile('secrets.json', 'utf8', function(err, data) {
                 if (err) throw err;
                 obj = JSON.parse(data);
-                obj.secrets.push({id: 1, msg: secret});
+                var hash = module.exports.generateDatetimeHash();
+                obj.secrets.push({id: hash, msg: secret});
                 json = JSON.stringify(obj);
                 fs.writeFileSync('secrets.json', json, 'utf8', console.log(secret+" added to secrets.json"));
             });
@@ -65,6 +66,16 @@ module.exports={
                 if (err) throw err;
             });
         }
+    },
+    generateDatetimeHash:function() {
+        var date = new Date();
+
+        var day = date.getDate();
+        var month = date.getMonth();
+        var year = date.getFullYear();
+        var time = date.getTime();
+
+        return(time ^ day ^ month ^ year);
     }
 }
 
