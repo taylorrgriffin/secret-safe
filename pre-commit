@@ -1,2 +1,2 @@
+echo "Evaluating pre-commit rules..."
 #TODO: add logic that hides secrets prior to commit
-console.log("Evaluating pre-commit rules...")
