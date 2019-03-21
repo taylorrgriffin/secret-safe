@@ -50,16 +50,6 @@ module.exports={
                 if (err) throw err;
             });
         }
-    },
-    generateDatetimeHash:function() {
-        var date = new Date();
-
-        var day = date.getDate();
-        var month = date.getMonth();
-        var year = date.getFullYear();
-        var time = date.getTime();
-
-        return(time ^ day ^ month ^ year);
     }
 }
 
