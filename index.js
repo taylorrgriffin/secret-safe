@@ -53,4 +53,5 @@ module.exports={
     }
 }
 
+// test
 module.exports.protect('ABCDEF');
