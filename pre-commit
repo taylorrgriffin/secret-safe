@@ -1,2 +1,4 @@
 echo "Evaluating pre-commit rules..."
+secrets=$(cat secrets.json | jq '.secrets')
+echo "From secrets.json: $secrets"
 #TODO: add logic that hides secrets prior to commit
