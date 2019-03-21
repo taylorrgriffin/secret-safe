@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/taylorrgriffin/secret-saver/issues"
   },
-  "homepage": "https://github.com/taylorrgriffin/secret-saver#readme"
+  "homepage": "https://github.com/taylorrgriffin/secret-saver#readme",
+  "dependencies": {
+    "uuid": "^3.3.2"
+  }
 }

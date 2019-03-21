@@ -1,8 +1,6 @@
 module.exports={
     /*** 
-     * protect(secret)
-     * preconditions: none
-     * postconditions: pre-commit file within .git directory will protect supplied secret
+    * A NPM module to abstract secrets to avoid accidental committal 
     ***/
     protect:function(secret) {
         const fs = require('fs');
@@ -14,11 +12,6 @@ module.exports={
         }
         module.exports.stagePrecommit();
     },
-    /***
-     * initSecrets(secret)
-     * preconditions: secrets.json doesn't exist
-     * postconditions: supplied secret is added to secrets.json 
-    ***/
     initSecrets:function(secret) {
         const fs = require('fs');
         var secrets = {
@@ -28,29 +21,20 @@ module.exports={
         fs.writeFileSync('secrets.json', json, 'utf8');
         module.exports.addSecret(secret);
     },
-    /*** 
-     * addSecret(secret)
-     * preconditons: secrets.json exists
-     * postconditions: secret has been added to secrets.json
-    ***/
     addSecret:function(secret) {
         const fs = require('fs');
+        const uuidv1 = require('uuid/v1');
         if (fs.existsSync('secrets.json')) {
             fs.readFile('secrets.json', 'utf8', function(err, data) {
                 if (err) throw err;
                 obj = JSON.parse(data);
-                var hash = module.exports.generateDatetimeHash();
+                var hash = uuidv1();
                 obj.secrets.push({id: hash, msg: secret});
                 json = JSON.stringify(obj);
                 fs.writeFileSync('secrets.json', json, 'utf8', console.log(secret+" added to secrets.json"));
             });
         }
     },
-    /***
-     * stagePrecommit()
-     * preconditions: at least one secret exists in secrets.json
-     * postconditions: pre-commit script is added to .git directory 
-    ***/
     stagePrecommit:function() {
         const fs = require('fs');
         // if pre-commit exists, append rules to end of file
