@@ -11,11 +11,8 @@ const uuidv1 = require("uuid/v1");
  * @param {string | number} secret
  */
 const protect = function(secret) {
-  if (fs.existsSync("secrets.json")) {
-    addSecret(secret);
-  } else {
-    initSecrets(secret);
-  }
+  const action = fs.existsSync("secrets.json") ? addSecret : initSecrets;
+  action(secret);
   stagePrecommit();
 };
 
@@ -34,9 +31,7 @@ const initSecrets = function(secret) {
 const addSecret = function(secret) {
   if (fs.existsSync("secrets.json")) {
     fs.readFile("secrets.json", "utf8", function(err, data) {
-      if (err) {
-        throw err;
-      }
+      errorHandler(err);
       fs.writeFileSync(
         "secrets.json",
         pushSecretToExistingObj(data, secret),
@@ -44,6 +39,54 @@ const addSecret = function(secret) {
         console.log(secret + " added to secrets.json")
       );
     });
+  }
+};
+
+const stagePrecommit = function() {
+  // if pre-commit exists, append rules to end of file
+  if (fs.existsSync(".git/hooks/pre-commit")) {
+    fs.readFile("pre-commit", "utf8", function(err, rules) {
+      errorHandler(err);
+      fs.appendFileSync(".git/hooks/pre-commit", rules);
+    });
+  }
+  // if it doesn't exist, add file and rules
+  if (!fs.existsSync(".git/hooks/pre-commit")) {
+    fs.copyFile("pre-commit", ".git/hooks/pre-commit", err => {
+      errorHandler(err);
+    });
+  }
+  // if it doesn't exist, add file and rules
+  if (!fs.existsSync(".git/hooks/pre-commit")) {
+    fs.copyFile("pre-commit", ".git/hooks/pre-commit", err => {
+      errorHandler(err);
+    });
+  }
+};
+
+/**
+ * Generates a hash based on the time func is called at
+ */
+const generateDatetimeHash = function() {
+  const date = new Date();
+
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const time = date.getTime();
+
+  return time ^ day ^ month ^ year;
+};
+
+// Util Functions
+
+/**
+ * throws if there's an error
+ * @param err
+ */
+const errorHandler = err => {
+  if (err) {
+    throw err;
   }
 };
 
@@ -60,52 +103,14 @@ const pushSecretToExistingObj = function(data, secret) {
   return json;
 };
 
-const stagePrecommit = function() {
-  // if pre-commit exists, append rules to end of file
-  if (fs.existsSync(".git/hooks/pre-commit")) {
-    fs.readFile("pre-commit", "utf8", function(err, rules) {
-      if (err) {
-        throw err;
-      }
-      fs.appendFileSync(".git/hooks/pre-commit", rules);
-    });
-  }
-  // if it doesn't exist, add file and rules
-  if (!fs.existsSync(".git/hooks/pre-commit")) {
-    fs.copyFile("pre-commit", ".git/hooks/pre-commit", err => {
-      if (err) {
-        throw err;
-      }
-    });
-  }
-  // if it doesn't exist, add file and rules
-  if (!fs.existsSync(".git/hooks/pre-commit")) {
-    fs.copyFile("pre-commit", ".git/hooks/pre-commit", err => {
-      if (err) {
-        throw err;
-      }
-    });
-  }
-};
-
-const generateDatetimeHash = function() {
-  const date = new Date();
-
-  const day = date.getDate();
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  const time = date.getTime();
-
-  return time ^ day ^ month ^ year;
-};
-
 //exports
 module.exports = {
-  protect,
-  initSecrets,
   addSecret,
-  stagePrecommit,
-  generateDatetimeHash
+  generateDatetimeHash,
+  initSecrets,
+  protect,
+  pushSecretToExistingObj,
+  stagePrecommit
 };
 
 // test
