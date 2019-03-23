@@ -2,16 +2,19 @@
  * A NPM module to abstract secrets to avoid accidental committal
  ***/
 
-//Imports
+//Module Imports
 const fs = require("fs");
 const uuidv1 = require("uuid/v1");
+
+//Local Imports
+const { preCommitFile, preCommitHooksFile, secretsStore } = require("./vars");
 
 /**
  * Main function used to parse secrets
  * @param {string | number} secret
  */
 const protect = function(secret) {
-  const action = fs.existsSync("secrets.json") ? addSecret : initSecrets;
+  const action = fs.existsSync(secretsStore) ? addSecret : initSecrets;
   action(secret);
   stagePrecommit();
 };
@@ -24,41 +27,37 @@ const initSecrets = function(secret) {
     secrets: []
   };
   const json = JSON.stringify(secrets);
-  fs.writeFileSync("secrets.json", json, "utf8");
+  fs.writeFileSync(secretsStore, json, "utf8");
   addSecret(secret);
 };
 
 const addSecret = function(secret) {
-  if (fs.existsSync("secrets.json")) {
-    fs.readFile("secrets.json", "utf8", function(err, data) {
+  if (fs.existsSync(secretsStore)) {
+    fs.readFile(secretsStore, "utf8", function(err, data) {
       errorHandler(err);
       fs.writeFileSync(
-        "secrets.json",
+        secretsStore,
         pushSecretToExistingObj(data, secret),
         "utf8",
-        console.log(secret + " added to secrets.json")
+        console.log(`${secret} added to ${secretsStore}`)
       );
     });
   }
 };
 
 const stagePrecommit = function() {
+  const preCommitHooksExist = fs.existsSync(preCommitHooksFile);
+
   // if pre-commit exists, append rules to end of file
-  if (fs.existsSync(".git/hooks/pre-commit")) {
-    fs.readFile("pre-commit", "utf8", function(err, rules) {
+  if (preCommitHooksExist) {
+    fs.readFile(preCommitFile, "utf8", function(err, rules) {
       errorHandler(err);
-      fs.appendFileSync(".git/hooks/pre-commit", rules);
+      fs.appendFileSync(preCommitHooksFile, rules);
     });
   }
   // if it doesn't exist, add file and rules
-  if (!fs.existsSync(".git/hooks/pre-commit")) {
-    fs.copyFile("pre-commit", ".git/hooks/pre-commit", err => {
-      errorHandler(err);
-    });
-  }
-  // if it doesn't exist, add file and rules
-  if (!fs.existsSync(".git/hooks/pre-commit")) {
-    fs.copyFile("pre-commit", ".git/hooks/pre-commit", err => {
+  if (!preCommitHooksExist) {
+    fs.copyFile(preCommitFile, preCommitHooksFile, err => {
       errorHandler(err);
     });
   }
