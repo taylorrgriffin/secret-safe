@@ -1,11 +1,11 @@
-const funcs = require("../index");
+const utils = require("../src/utils");
 
 describe("core functions", () => {
   describe("pushSecretToExistingObj", () => {
     it("returns a string that contains the secret", () => {
       const secret =
         "I'm a little secret, short and stout, here is my handle, here is my spout!";
-      const newJson = funcs.pushSecretToExistingObj(
+      const newJson = utils.pushSecretToExistingObj(
         '{"secrets":[{"id":1239843344,"msg":"ABCDEF"}]}',
         secret
       );
