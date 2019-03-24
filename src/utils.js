@@ -38,15 +38,22 @@ const addSecret = function(secret) {
 const stagePrecommit = function() {
   const preCommitHooksExist = fs.existsSync(preCommitHooksFile);
 
-  // if pre-commit exists, append rules to end of file
+  // pre-commit hook exists
   if (preCommitHooksExist) {
     fs.readFile(preCommitFile, "utf8", function(err, rules) {
       errorHandler(err);
-      fs.appendFileSync(preCommitHooksFile, rules);
+      fs.readFile(preCommitHooksFile, "utf8", function(err, existingRules) {
+        errorHandler(err);
+        // add secret abstraction if its not already in the hook
+        if (!existingRules.includes(rules)) {
+          fs.appendFileSync(preCommitHooksFile, rules);
+        }
+      });
     });
   }
-  // if it doesn't exist, add file and rules
+  // hook doesn't exist
   if (!preCommitHooksExist) {
+    // add hook
     fs.copyFile(preCommitFile, preCommitHooksFile, err => {
       errorHandler(err);
     });
