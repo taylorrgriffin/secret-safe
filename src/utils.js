@@ -10,7 +10,7 @@ const uuidv1 = require("uuid/v1");
 const { preCommitFile, preCommitHooksFile, secretsStore } = require("../vars");
 
 /**
- *
+ * 
  */
 const initSecrets = function(secret) {
   const secrets = {
@@ -38,33 +38,26 @@ const addSecret = function(secret) {
 const stagePrecommit = function() {
   const preCommitHooksExist = fs.existsSync(preCommitHooksFile);
 
-  // if pre-commit exists, append rules to end of file
+  // pre-commit hook exists
   if (preCommitHooksExist) {
     fs.readFile(preCommitFile, "utf8", function(err, rules) {
       errorHandler(err);
-      fs.appendFileSync(preCommitHooksFile, rules);
+      fs.readFile(preCommitHooksFile, "utf8", function(err, existingRules) {
+        errorHandler(err);
+        // add secret abstraction if its not already in the hook
+        if (!existingRules.includes(rules)) {
+          fs.appendFileSync(preCommitHooksFile, rules);
+        }
+      });
     });
   }
-  // if it doesn't exist, add file and rules
+  // hook doesn't exist
   if (!preCommitHooksExist) {
+    // add hook
     fs.copyFile(preCommitFile, preCommitHooksFile, err => {
       errorHandler(err);
     });
   }
-};
-
-/**
- * Generates a hash based on the time func is called at
- */
-const generateDatetimeHash = function() {
-  const date = new Date();
-
-  const day = date.getDate();
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  const time = date.getTime();
-
-  return time ^ day ^ month ^ year;
 };
 
 /**
@@ -79,7 +72,7 @@ const errorHandler = err => {
 
 /**
  * Takes data from file and returns json with secret added
- * @param {string} data
+ * @param {string} data file contents from fs.readFile 
  * @param secret
  */
 const pushSecretToExistingObj = function(data, secret) {
@@ -93,7 +86,6 @@ const pushSecretToExistingObj = function(data, secret) {
 //exports
 module.exports = {
   addSecret,
-  generateDatetimeHash,
   initSecrets,
   pushSecretToExistingObj,
   stagePrecommit

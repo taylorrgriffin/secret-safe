@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "customInstall": "./install.sh",
     "test": "jasmine"
   },
   "repository": {
