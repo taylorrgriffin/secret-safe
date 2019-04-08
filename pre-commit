@@ -1,4 +1,16 @@
+#!/bin/bash
 echo "Evaluating pre-commit rules..."
 secrets=$(cat secrets.json | jq '.secrets')
 echo "From secrets.json: $secrets"
+
+#TODO: fix added files not being found (only modified are being found)
+echo "Modified files: "
+files=$(git diff --name-only --diff-filter=ACM -z | xargs -0)
+files_arr=($(echo "$files" | tr ' ' '\n'))
+for file in "${files_arr[@]}"
+do
+    : 
+    echo $file
+done
+
 #TODO: add logic that hides secrets prior to commit
