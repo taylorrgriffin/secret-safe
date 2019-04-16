@@ -1,15 +1,22 @@
 #!/bin/bash
 echo "Evaluating pre-commit rules..."
-secrets=$(cat secrets.json | jq '.secrets')
-echo "From secrets.json: $secrets"
 
-echo "Staged files: "
+# generate list of staged files
 files=$(git diff --staged --name-only --diff-filter=ACM -z | xargs -0)
 files_arr=($(echo "$files" | tr ' ' '\n'))
-for file in "${files_arr[@]}"
-do
-    : 
-    echo $file
-done
 
-#TODO: add logic that hides secrets prior to commit
+# iterate through list of secrets in secrets.json
+secrets=$(cat secrets.json | jq -c '.secrets')
+for secret in $(echo "${secrets}" | jq -r '.[] | @base64'); do
+    _jq() {
+     echo ${secret} | base64 --decode | jq -r ${1}
+    }
+    secret_msg=$(_jq '.msg')
+    secret_hash=$(_jq '.id')
+    # scan each staged file for usages of secret
+    for file in "${files_arr[@]}"; do
+        echo "Checking $file for $secret_hash"
+        # replace found secret with hash
+        sed -i '' "s/$secret_msg/$secret_hash/g" $file
+    done
+done
