@@ -1,5 +1,7 @@
 const utils = require("../src/utils");
 
+//TODO: simplify logic of pushSecretToExistingObj
+//TODO: test with two secrets, and check for their existance
 describe("core functions", () => {
   describe("pushSecretToExistingObj", () => {
     it("returns a string that contains the secret", () => {
