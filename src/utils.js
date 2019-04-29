@@ -7,7 +7,7 @@ const fs = require("fs");
 const uuidv1 = require("uuid/v1");
 
 //Local Imports
-const { preCommitFile, preCommitHooksFile, secretsStore } = require("../vars");
+const { preCommitFile, preCommitHooksFile, postCommitFile, postCommitHooksFile, secretsStore } = require("../vars");
 
 /**
  * 
@@ -60,6 +60,31 @@ const stagePrecommit = function() {
   }
 };
 
+const stagePostcommit = function() {
+  const postCommitHooksExist = fs.existsSync(postCommitHooksFile);
+
+  // post-commit hook exists
+  if (postCommitHooksExist) {
+    fs.readFile(postCommitFile, "utf8", function(err, rules) {
+      errorHandler(err);
+      fs.readFile(postCommitHooksFile, "utf8", function(err, existingRules) {
+        errorHandler(err);
+        // add hash replacement if its not already in the hook
+        if (!existingRules.includes(rules)) {
+          fs.appendFileSync(postCommitHooksFile, rules);
+        }
+      });
+    });
+  }
+  // hook doesn't exist
+  if (!postCommitHooksExist) {
+    // add hook
+    fs.copyFile(postCommitFile, postCommitHooksFile, err => {
+      errorHandler(err);
+    });
+  }
+}
+
 /**
  * throws if there's an error
  * @param err
@@ -88,5 +113,6 @@ module.exports = {
   addSecret,
   initSecrets,
   pushSecretToExistingObj,
-  stagePrecommit
+  stagePrecommit,
+  stagePostcommit
 };

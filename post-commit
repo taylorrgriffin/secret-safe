@@ -1,5 +1,9 @@
 #!/bin/bash
-echo "Evaluating post-commit rules..."
+printf "\n"
+printf "====================================\n"
+printf "Evaluating post-commit rules...\n"
+printf "====================================\n"
+printf "\n"
 
 # generate list of committed files
 files=$(git diff --name-only HEAD^ HEAD | xargs -0)
@@ -15,8 +19,14 @@ for secret in $(echo "${secrets}" | jq -r '.[] | @base64'); do
     secret_hash=$(_jq '.id')
     # scan each staged file for usages of hash
     for file in "${files_arr[@]}"; do
-        echo "Checking $file for $secret_hash"
+        echo "Checking [$file] for [$secret_hash]"
         # replace found hash with secret
         sed -i '' "s/$secret_hash/$secret_msg/g" $file
+
+        printf "Contents of [$file] after post-commit:\n"
+        printf "%s" "$(<$file)\n"
     done
 done
+
+printf "====================================\n"
+printf "\n"

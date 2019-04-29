@@ -1,5 +1,9 @@
 #!/bin/bash
-echo "Evaluating pre-commit rules..."
+printf "\n"
+printf "====================================\n"
+printf "Evaluating pre-commit rules...\n"
+printf "====================================\n"
+printf "\n"
 
 # generate list of staged files
 files=$(git diff --staged --name-only --diff-filter=ACM -z | xargs -0)
@@ -15,8 +19,16 @@ for secret in $(echo "${secrets}" | jq -r '.[] | @base64'); do
     secret_hash=$(_jq '.id')
     # scan each staged file for usages of secret
     for file in "${files_arr[@]}"; do
-        echo "Checking $file for $secret_hash"
-        # replace found secret with hash
-        sed -i '' "s/$secret_msg/$secret_hash/g" $file
+        if [ "$file" != "secrets.json" ]; then
+            printf "Checking [$file] for [$secret_msg]\n"
+            # replace found secret with hash
+            sed -i '' "s/$secret_msg/$secret_hash/g" $file
+            git add $file
+        else
+            printf "Skipping secrets.json\n"
+        fi
+
+        printf "Contents of $file after pre-commit:\n"
+        printf "%s" "$(<$file)\n"
     done
 done
