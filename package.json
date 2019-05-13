@@ -7,6 +7,10 @@
     "customInstall": "./install.sh",
     "test": "jasmine"
   },
+  "bin": {
+    "protect": "./commands/protect.js",
+    "inspect": "./commands/inspect.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/taylorrgriffin/secret-saver.git"
