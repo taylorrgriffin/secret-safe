@@ -24,7 +24,7 @@ for secret in $(echo "${secrets}" | jq -r '.[] | @base64'); do
         sed -i '' "s/$secret_hash/$secret_msg/g" $file
 
         printf "Contents of [$file] after post-commit:\n"
-        printf "%s" "$(<$file)\n"
+        printf "%s\n" "$(<$file)"
     done
 done
 
