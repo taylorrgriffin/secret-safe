@@ -29,6 +29,6 @@ for secret in $(echo "${secrets}" | jq -r '.[] | @base64'); do
         fi
 
         printf "Contents of $file after pre-commit:\n"
-        printf "%s" "$(<$file)\n"
+        printf "%s\n" "$(<$file)"
     done
 done
