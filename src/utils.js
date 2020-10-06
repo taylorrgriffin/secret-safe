@@ -88,5 +88,6 @@ module.exports = {
   addSecret,
   initSecrets,
   pushSecretToExistingObj,
-  stagePrecommit
+  stagePrecommit,
+  errorHandler
 };
