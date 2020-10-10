@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/taylorrgriffin/secret-saver#readme",
   "dependencies": {
-    "uuid": "^3.3.2"
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "jasmine": "^3.3.1"
