@@ -7,23 +7,23 @@ const { getConfig } = require('../lib/utils');
 const { preCommit } = require('../lib/pre-commit');
 const { postCommit } = require('../lib/post-commit');
 
+const config = getConfig();
 const args = process.argv.splice(2);
 
 if (args.length == 0) {
   console.info("Usage: etc...");
 }
 else if (args[0] == 'init') {
-  init();
+  init(config);
 }
 else if (args[0] == "unlink") {
   console.error("secret-safe unlink is not yet defined");
 }
 else if (args[0] == "pre-commit") {
-  let config = getConfig();
   preCommit(config);
 }
 else if (args[0] == "post-commit") {
-  postCommit();
+  postCommit(config);
 }
 else {
   console.info("Usage: etc...");
