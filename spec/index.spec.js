@@ -14,15 +14,16 @@ describe("utilities", () => {
       let result = await utils.execShellCommand(`echo "Hello world"`);
       expect(result).toBe("Hello world\n");
     });
-    // TODO: fix error throwing on this
-    // it("throws an error when passed an invalid command", async () => {
-    //   let error;
-    //   try {
-    //     await utils.execShellCommand("invalidcommand");
-    //   } catch(e) {
-    //     error = e;
-    //   }
-    //   // expect(error).not.toBeNull();
-    // });
+    it("rejects if passed an invalid command", async () => {
+      await expectAsync(utils.execShellCommand("invalidcommand"))
+        .toBeRejected();
+    })
   });
+
+  describe("getStagedFiles", () => {
+    it("should return an array", async () => {
+      let result = await utils.getStagedFiles();
+      expect(result.length).not.toBeNull();
+    });
+  })
 });
