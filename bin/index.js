@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { init } = require('../lib/init');
+const { unlink } = require('../lib/unlink');
 const { getConfig } = require('../lib/utils');
 const { preCommit } = require('../lib/pre-commit');
 const { postCommit } = require('../lib/post-commit');
@@ -17,7 +18,7 @@ else if (args[0] == 'init') {
   init(config);
 }
 else if (args[0] == "unlink") {
-  console.error("secret-safe unlink is not yet defined");
+  unlink(config);
 }
 else if (args[0] == "pre-commit") {
   preCommit(config);

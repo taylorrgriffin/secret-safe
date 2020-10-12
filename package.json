@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/taylorrgriffin/secret-saver#readme",
   "dependencies": {
+    "rimraf": "^3.0.2",
     "uuid": "^3.4.0"
   },
   "devDependencies": {
