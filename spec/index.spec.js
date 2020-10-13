@@ -1,16 +1,29 @@
-const utils = require("../src/utils");
+const utils = require("../lib/utils");
 
-describe("core functions", () => {
-  describe("pushSecretToExistingObj", () => {
-    it("returns a string that contains the secret", () => {
-      const secret =
-        "I'm a little secret, short and stout, here is my handle, here is my spout!";
-      const newJson = utils.pushSecretToExistingObj(
-        '{"secrets":[{"id":1239843344,"msg":"ABCDEF"}]}',
-        secret
-      );
-      expect(newJson.includes("Tip me over and pour me out!")).toBe(false);
-      expect(newJson.includes(secret)).toBe(true);
+describe("utilities", () => {
+  describe("errorHandler", () => {
+    it("throws an error when passed an error", () => {
+      expect(() => {
+        utils.errorHandler(new Error("Example Error"))
+      }).toThrowError("Example Error");
     });
   });
+
+  describe("execShellCommand", () => {
+    it("can run a simple bash command", async () => {
+      let result = await utils.execShellCommand(`echo "Hello world"`);
+      expect(result).toBe("Hello world\n");
+    });
+    it("rejects if passed an invalid command", async () => {
+      await expectAsync(utils.execShellCommand("invalidcommand"))
+        .toBeRejected();
+    })
+  });
+
+  describe("getStagedFiles", () => {
+    it("should return an array", async () => {
+      let result = await utils.getStagedFiles();
+      expect(result.length).not.toBeNull();
+    });
+  })
 });

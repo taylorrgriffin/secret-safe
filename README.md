@@ -1,4 +1,4 @@
-# secret-saver
+# secret-safe
 
 ### Keeps your pesky secrets from being committed!
 

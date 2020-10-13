@@ -1,24 +1,28 @@
 {
-  "name": "secret-saver",
+  "name": "secret-safe",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./lib/init.js",
   "scripts": {
     "customInstall": "./install.sh",
     "test": "jasmine"
+  },
+  "bin": {
+    "secret-safe": "./bin/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/taylorrgriffin/secret-saver.git"
   },
-  "author": "",
+  "author": "Taylor Griffin",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/taylorrgriffin/secret-saver/issues"
   },
   "homepage": "https://github.com/taylorrgriffin/secret-saver#readme",
   "dependencies": {
-    "uuid": "^3.3.2"
+    "rimraf": "^3.0.2",
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "jasmine": "^3.3.1"
