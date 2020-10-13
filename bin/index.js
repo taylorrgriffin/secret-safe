@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { init } = require('../lib/init');
 const { unlink } = require('../lib/unlink');
+const { status } = require('../lib/status');
 const { getConfig } = require('../lib/utils');
 const { preCommit } = require('../lib/pre-commit');
 const { postCommit } = require('../lib/post-commit');
@@ -19,6 +20,9 @@ else if (args[0] == 'init') {
 }
 else if (args[0] == "unlink") {
   unlink(config);
+}
+else if (args[0] == "status") {
+  status(config);
 }
 else if (args[0] == "pre-commit") {
   preCommit(config);
