@@ -1,7 +1,7 @@
 {
-  "name": "secret-safe",
+  "name": "@taylorrgriffin/secret-safe",
   "version": "1.0.0",
-  "description": "",
+  "description": "Keep your pesky secrets from being committed!",
   "main": "./lib/init.js",
   "scripts": {
     "customInstall": "./install.sh",
@@ -26,5 +26,8 @@
   },
   "devDependencies": {
     "jasmine": "^3.3.1"
+  },
+  "directories": {
+    "lib": "lib"
   }
 }
