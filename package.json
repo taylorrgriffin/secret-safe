@@ -4,7 +4,8 @@
   "description": "Keep your pesky secrets from being committed!",
   "main": "./lib/init.js",
   "scripts": {
-    "customInstall": "./install.sh",
+    "install": "cd $INIT_CWD && pwd && secret-safe init",
+    "preuninstall": "cd $INIT_CWD && secret-safe unlink",
     "test": "jasmine"
   },
   "bin": {
