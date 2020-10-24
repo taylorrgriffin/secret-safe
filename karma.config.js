@@ -1,0 +1,35 @@
+module.exports = function (config) {
+  config.set({
+      basePath: '',
+      frameworks: ['jasmine'],
+      files: [
+          // 'src/app/**/*.js',
+          // 'src/spec/**/*.specs.js'
+          "**/*[sS]pec.js"
+      ],
+      preprocessors: {
+          '**/src/app/*.js': ['coverage']
+      },
+      plugins: [
+          'karma-jasmine',
+          'karma-phantomjs-launcher',
+          'karma-coverage'
+      ],
+      reporters: ['progress', 'coverage'],
+      port: 9878,
+      colors: true,
+      logLevel: config.LOG_DEBUG,
+      autowatch: true,
+      browsers: ['PhantomJS'],
+      singleRun: false,
+      concurrency: Infinity,
+      coverageReporter: {
+          includeAllSources: true,
+          dir: 'coverage/',
+          reporters: [
+              { type: "html", subdir: "html" },
+              { type: 'text-summary' }
+          ]
+      }
+  });
+};
