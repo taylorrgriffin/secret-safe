@@ -17,9 +17,9 @@ describe("utilities", () => {
       expect(result).toBe("Hello world\n");
     });
     it("rejects if passed an invalid command", async () => {
-      await expectAsync(utils.execShellCommand("invalidcommand"))
-        .toBeRejected();
-    })
+      await expect(utils.execShellCommand("invalidcommand"))
+        .rejects.not.toBeNull();
+    });
   });
 
   describe("getStagedFiles", () => {
@@ -62,6 +62,8 @@ describe("utilities", () => {
       // ensure temp directory exists
       dirExists = fs.existsSync(tmp);
       expect(dirExists).toBe(true);
+      // ensure createTmpDir doesn't fail if dir exists
+      await utils.createTmpDir(tmp);
       // remove temp directory
       await utils.execShellCommand(`rm -r ${tmp}`);
       // ensure temp directory doesn't exists anymore
